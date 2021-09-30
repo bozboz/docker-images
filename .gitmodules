@@ -1,0 +1,3 @@
+[submodule "php7.0/boz-cli"]
+	path = php7.0/boz-cli
+	url = git@gitlab.bozboz.co.uk:boztools/boz-cli.git
