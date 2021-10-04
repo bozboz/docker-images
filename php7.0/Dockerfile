@@ -34,6 +34,3 @@ RUN apt-get update \
 
 RUN touch ~/.bashrc
 RUN curl --silent -o- https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
-
-ADD ./boz-cli $HOME/boz-cli
-ENV PATH $HOME/boz-cli:$PATH
