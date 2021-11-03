@@ -27,8 +27,6 @@ ENV DEBIAN_FRONTEND noninteractive
 ENV TZ=UTC
 ENV PATH="${HOME}/.config/composer/vendor/bin:${HOME}/.symfony/bin:${PATH}"
 
-COPY nvm.sh /usr/bin/nvm
-
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 RUN apt-get update \
@@ -56,5 +54,7 @@ RUN apt-get update \
     && chmod +x phpcpd.phar \
     && mv phpcpd.phar /usr/bin/phpcpd \
     && curl -sL https://get.symfony.com/cli/installer | bash - \
-    && touch ~/.bashrc \
-    && curl --silent -o- https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
+    && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+
+COPY nvm.sh /usr/bin/nvm
+COPY npm.sh /usr/bin/npm

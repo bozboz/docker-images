@@ -33,6 +33,6 @@ push:
 
 buildall:
 	for NUMBER in ${VERSIONS} ; do \
-		make -j ${VERSION_COUNT} -d build -e PHP_VERSION=$$NUMBER ; \
-		make -j ${VERSION_COUNT} -d push -e PHP_VERSION=$$NUMBER ; \
+		make -j ${VERSION_COUNT} build -e PHP_VERSION=$$NUMBER ; \
+		make -j ${VERSION_COUNT} push -e PHP_VERSION=$$NUMBER ; \
 	done
