@@ -18,11 +18,10 @@ generate:
 		echo '# This is an automatically generated file from a stub in /ci.' >> $$NUMBER/Dockerfile ; \
 		echo '# Make any required changes there and then regenerate.' >> $$NUMBER/Dockerfile ; \
 		echo "\n\n\n\n\n\n\n\n\n\n\n\n" >> $$NUMBER/Dockerfile ; \
-		cat Dockerfile.stub >> $$NUMBER/Dockerfile ; \
-		sed -i "s/{PHP_VERSION}/$$NUMBER/g" $$NUMBER/Dockerfile ; \
-		cp readme.stub $$NUMBER/README.md ; \
-		sed -i "s/{PHP_VERSION}/$$NUMBER/g" $$NUMBER/README.md ; \
+		sed "s/{PHP_VERSION}/$$NUMBER/g" Dockerfile.stub >> $$NUMBER/Dockerfile ; \
+		sed "s/{PHP_VERSION}/$$NUMBER/g" readme.stub > $$NUMBER/README.md ; \
 		cp nvm.sh $$NUMBER/nvm.sh ; \
+		cp npm.sh $$NUMBER/npm.sh ; \
 	done
 
 build:
