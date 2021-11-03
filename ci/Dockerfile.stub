@@ -10,6 +10,7 @@ ENV TZ=UTC
 ENV PATH="${HOME}/.config/composer/vendor/bin:${HOME}/.symfony/bin:${PATH}"
 
 COPY nvm.sh /usr/bin/nvm
+COPY npm.sh /usr/bin/npm
 
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
