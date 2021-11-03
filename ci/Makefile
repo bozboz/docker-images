@@ -3,10 +3,11 @@ REPO=bozboz
 IMAGENAME=ci
 IMAGEFULLNAME=${REPO}/${IMAGENAME}
 VERSIONS=7.0 7.3 7.4 8.0
+VERSION_COUNT=4
 
-.PHONY: run generate build push
+.PHONY: generate build push buildall
 
-run: | generate build push
+run: | generate buildall
 
 generate:
 	for NUMBER in ${VERSIONS} ; do \
@@ -25,11 +26,13 @@ generate:
 	done
 
 build:
-	for NUMBER in ${VERSIONS} ; do \
-		docker build $$NUMBER -t ${IMAGEFULLNAME}:$$NUMBER ; \
-	done
+	docker build ${PHP_VERSION} -t ${IMAGEFULLNAME}:${PHP_VERSION}
 
 push:
+	docker push ${IMAGEFULLNAME}:${PHP_VERSION}
+
+buildall:
 	for NUMBER in ${VERSIONS} ; do \
-		docker push ${IMAGEFULLNAME}:$$NUMBER ; \
+		make -j ${VERSION_COUNT} -d build -e PHP_VERSION=$$NUMBER ; \
+		make -j ${VERSION_COUNT} -d push -e PHP_VERSION=$$NUMBER ; \
 	done
