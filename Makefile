@@ -3,5 +3,5 @@ IMAGES=ci
 
 run:
 	for IMAGE in ${IMAGES} ; do \
-		make -d -C $$IMAGE ; \
+		make -C $$IMAGE ; \
 	done
