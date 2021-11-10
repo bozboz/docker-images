@@ -4,16 +4,19 @@ LABEL maintainer="Bozboz"
 
 USER root
 
+WORKDIR /tmp
+
 ENV IMAGE_USER=php
 ENV HOME=/home/$IMAGE_USER
 ENV COMPOSER_HOME=$HOME/.composer
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV TZ=UTC
-ENV PATH="${HOME}/.config/composer/vendor/bin:${HOME}/.symfony/bin:${PATH}"
+ENV PATH="${HOME}/.composer/vendor/bin:${HOME}/.config/composer/vendor/bin:${HOME}/.symfony/bin:${PATH}"
 ENV GOSS_VERSION="0.3.16"
 
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+RUN adduser --disabled-password --gecos "" $IMAGE_USER
 
 ############################################################
 # Speedup DPKG and don't use cache for packages
@@ -72,7 +75,6 @@ RUN apt-get update \
     && mv phpcpd.phar /usr/bin/phpcpd \
     && curl -sL https://get.symfony.com/cli/installer | bash - \
     && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash \
-    && adduser --disabled-password --gecos "" $IMAGE_USER \
     && echo "$IMAGE_USER  ALL = ( ALL ) NOPASSWD: ALL" >> /etc/sudoers \
     && curl -fsSL https://goss.rocks/install | GOSS_VER=v${GOSS_VERSION} sh
 
@@ -90,7 +92,6 @@ RUN apt-get autoremove -yq --purge
 RUN apt-get autoclean -yq
 RUN apt-get clean
 RUN rm -rf /var/cache/apt/ /var/lib/apt/lists/* /var/log/* /tmp/* /var/tmp/* /usr/share/doc /usr/share/doc-base /usr/share/groff/* /usr/share/info/* /usr/share/linda/* /usr/share/lintian/overrides/* /usr/share/locale/* /usr/share/man/* /usr/share/locale/* /usr/share/gnome/help/*/* /usr/share/doc/kde/HTML/*/* /usr/share/omf/*/*-*.emf
-
 
 COPY nvm.sh /usr/bin/nvm
 COPY npm.sh /usr/bin/npm
