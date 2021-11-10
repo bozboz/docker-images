@@ -16,7 +16,7 @@ generate:
 		cat .dont-update.txt > $$NUMBER/Dockerfile ; \
 		sed "s/{PHP_VERSION}/$$NUMBER/g" Dockerfile.stub >> $$NUMBER/Dockerfile ; \
 		sed "s/{PHP_VERSION}/$$NUMBER/g" readme.stub > $$NUMBER/README.md ; \
-		cp nvm.sh $$NUMBER/nvm.sh ; \
+		cp nvminit.sh $$NUMBER/nvminit.sh ; \
 		cp npm.sh $$NUMBER/npm.sh ; \
 	done
 
