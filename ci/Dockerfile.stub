@@ -2,17 +2,52 @@ FROM ubuntu:20.04
 
 LABEL maintainer="Bozboz"
 
-WORKDIR /var/www/html
+USER root
 
-ENV HOME /var/www
+ENV IMAGE_USER=php
+ENV HOME=/home/$IMAGE_USER
+ENV COMPOSER_HOME=$HOME/.composer
+
 ENV DEBIAN_FRONTEND noninteractive
 ENV TZ=UTC
 ENV PATH="${HOME}/.config/composer/vendor/bin:${HOME}/.symfony/bin:${PATH}"
+ENV GOSS_VERSION="0.3.16"
 
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
+############################################################
+# Speedup DPKG and don't use cache for packages
+############################################################
+# Taken from here: https://gist.github.com/kwk/55bb5b6a4b7457bef38d
+#
+# this forces dpkg not to call sync() after package extraction and speeds up
+# install
+RUN echo "force-unsafe-io" > /etc/dpkg/dpkg.cfg.d/02apt-speedup \
+    && echo "Acquire::http {No-Cache=True;};" > /etc/apt/apt.conf.d/no-cache \
+    && echo 'APT::Install-Recommends "false";' > /etc/apt/apt.conf
+
 RUN apt-get update \
-    && apt-get install -y openssh-client rsync apt-transport-https build-essential gnupg gosu curl ca-certificates zip unzip git libcap2-bin libpng-dev \
+    && apt-get install -yq \
+        apt-transport-https \
+        apt-utils \
+        ca-certificates \
+    && apt-get install -yq \
+        build-essential \
+        curl \
+        git \
+        gnupg2 \
+        gosu \
+        jq \
+        libc-client-dev \
+        libcap2-bin \
+        libpng-dev \
+        openssh-client \
+        rsync \
+        sudo \
+        unzip \
+        zip \
+        zlib1g-dev \
+    && rm -rf /var/lib/apt/lists/* \
     && mkdir -p ~/.gnupg \
     && echo "disable-ipv6" >> ~/.gnupg/dirmngr.conf \
     && apt-key adv --homedir ~/.gnupg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys E5267A6C \
@@ -36,7 +71,30 @@ RUN apt-get update \
     && chmod +x phpcpd.phar \
     && mv phpcpd.phar /usr/bin/phpcpd \
     && curl -sL https://get.symfony.com/cli/installer | bash - \
-    && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+    && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash \
+    && adduser --disabled-password --gecos "" $IMAGE_USER \
+    && echo "$IMAGE_USER  ALL = ( ALL ) NOPASSWD: ALL" >> /etc/sudoers \
+    && curl -fsSL https://goss.rocks/install | GOSS_VER=v${GOSS_VERSION} sh
+
+RUN apt-get purge -yq --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false \
+    apt-utils \
+    build-essential \
+    dpkg-dev \
+    file \
+    libc-client-dev \
+    libc-dev \
+    libpcre3-dev \
+    pkg-config
+
+RUN apt-get autoremove -yq --purge
+RUN apt-get autoclean -yq
+RUN apt-get clean
+RUN rm -rf /var/cache/apt/ /var/lib/apt/lists/* /var/log/* /tmp/* /var/tmp/* /usr/share/doc /usr/share/doc-base /usr/share/groff/* /usr/share/info/* /usr/share/linda/* /usr/share/lintian/overrides/* /usr/share/locale/* /usr/share/man/* /usr/share/locale/* /usr/share/gnome/help/*/* /usr/share/doc/kde/HTML/*/* /usr/share/omf/*/*-*.emf
+
 
 COPY nvm.sh /usr/bin/nvm
 COPY npm.sh /usr/bin/npm
+
+USER $IMAGE_USER
+
+WORKDIR /var/www/html
