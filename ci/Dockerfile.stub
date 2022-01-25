@@ -12,7 +12,7 @@ ENV PATH="${HOME}/.config/composer/vendor/bin:${HOME}/.symfony/bin:${PATH}"
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 RUN apt-get update \
-    && apt-get install -y openssh-client rsync apt-transport-https build-essential gnupg gosu curl ca-certificates zip unzip git libcap2-bin libpng-dev \
+    && apt-get install -y openssh-client rsync apt-transport-https build-essential gnupg gosu curl libcurl3 libcurl3-dev ca-certificates zip unzip git libcap2-bin libpng-dev \
     && mkdir -p ~/.gnupg \
     && echo "disable-ipv6" >> ~/.gnupg/dirmngr.conf \
     && apt-key adv --homedir ~/.gnupg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys E5267A6C \
