@@ -37,8 +37,7 @@ RUN apt-get update \
     && apt-get install -yq \
         build-essential \
         curl \
-        libcurl3 \
-        libcurl3-dev \
+        libcurl4 \
         git \
         gnupg2 \
         gosu \
