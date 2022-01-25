@@ -2,7 +2,7 @@
 REPO=bozboz
 IMAGENAME=ci
 IMAGEFULLNAME=${REPO}/${IMAGENAME}
-VERSIONS=7.0 7.3 7.4 8.0
+VERSIONS=5.6 7.0 7.3 7.4 8.0 8.1
 VERSION_COUNT=4
 
 .PHONY: generate build push buildall
