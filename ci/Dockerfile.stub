@@ -2,6 +2,9 @@ FROM ubuntu:20.04
 
 LABEL maintainer="Bozboz"
 
+ARG UID=1000
+ARG GID=1000
+
 USER root
 
 WORKDIR /tmp
@@ -16,7 +19,8 @@ ENV PATH="${HOME}/.composer/vendor/bin:${HOME}/.config/composer/vendor/bin:${HOM
 ENV GOSS_VERSION="0.3.16"
 
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-RUN adduser --disabled-password --gecos "" $IMAGE_USER
+RUN groupadd -g $GID $IMAGE_USER
+RUN adduser --disabled-password --gecos "" "${IMAGE_USER}" --uid="${UID}" --gid="${GID}"
 
 ############################################################
 # Speedup DPKG and don't use cache for packages
@@ -98,6 +102,9 @@ RUN chmod -R 777 $HOME
 
 COPY nvminit.sh /usr/bin/nvminit
 COPY npm.sh /usr/bin/npm
+
+RUN git config --global user.email "dev@bozboz.co.uk"
+RUN git config --global user.name "Boz CI"
 
 USER $IMAGE_USER
 

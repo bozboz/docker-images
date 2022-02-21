@@ -21,7 +21,10 @@ generate:
 	done
 
 build:
-	docker build ${PHP_VERSION} -t ${IMAGEFULLNAME}:${PHP_VERSION}
+	docker build -t ${IMAGEFULLNAME}:${PHP_VERSION} \
+		--build-arg UID=$(shell id -u) \
+		--build-arg GID=$(shell id -g) \
+		${PHP_VERSION}
 
 push:
 	docker push ${IMAGEFULLNAME}:${PHP_VERSION}
